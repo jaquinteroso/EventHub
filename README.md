@@ -1,8 +1,8 @@
 # EventHub
 
-**Universidad de los Andes — Faculty of Engineering and Applied Sciences**  
-**Course:** Web Technologies (202610)  
-**Assignment 1:** User Stories, Data Model, and Landing Page
+**Universidad de los Andes — Faculty of Engineering and Applied Sciences**
+**Course:** Web Technologies (202610)
+**Assignment 2:** Rails Application with Database Integration
 
 ---
 
@@ -21,39 +21,79 @@
 
 ---
 
+## Data Model
+
+The application is built around the following entities:
+
+- **User** — Authenticated user with a role (`regular` or `admin`). Can organize events, register for events, and leave reviews.
+- **Event** — Created by a user (organizer), belongs to a category and venue. Has a lifecycle state: `draft`, `published`, `ongoing`, `completed`, or `cancelled`.
+- **Category** — Groups events by type (e.g., talks, workshops, sports).
+- **Venue** — Physical location for an event, with a maximum capacity.
+- **Registration** — Join table between users and events. Status is either `confirmed` or `waiting_list`.
+- **Review** — Left by a user for a completed event they attended. Includes a rating (1–5) and a comment.
+
+---
+
+## Setup Instructions
+
+### Requirements
+
+- Ruby 3.2.2
+- Rails 8
+- PostgreSQL
+- Node.js & Yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/jaquinteroso/EventHub.git
+cd EventHub
+
+# Install dependencies
+bundle install
+yarn install
+
+# Set up the database
+bin/rails db:create
+bin/rails db:migrate
+bin/rails db:seed
+
+# Start the server
+bin/rails server
+```
+
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
 ## Repository Structure
 
 ```
 EventHub/
 ├── app/
+│   ├── controllers/
+│   │   ├── categories_controller.rb
+│   │   ├── events_controller.rb
+│   │   ├── pages_controller.rb
+│   │   └── venues_controller.rb
+│   ├── models/
+│   │   ├── category.rb
+│   │   ├── event.rb
+│   │   ├── registration.rb
+│   │   ├── review.rb
+│   │   ├── user.rb
+│   │   └── venue.rb
 │   └── views/
 │       └── pages/
-│           └── home.html.erb       # Landing page (Bootstrap)
+│           └── home.html.erb       # Landing page
+├── db/
+│   ├── schema.rb
+│   └── seeds.rb                    # Sample data for all entities
 ├── relational_diagram.png          # Relational data model diagram
 ├── user_stories.md                 # Complete set of user stories
 └── README.md                       # This file
 ```
-
----
-
-## Deliverables
-
-### 1. Landing Page (`app/views/pages/home.html.erb`)
-Static HTML page styled with Bootstrap, including:
-- Navbar with links to the main sections (Events, Categories, Login, Sign Up)
-- Hero section introducing EventHub with a call-to-action button ("Browse Events")
-- About section explaining the platform and its target users
-- Contact section with placeholder contact information
-- Footer with team name, course, and year
-
-### 2. User Stories (`user_stories.md`)
-Complete set of user stories following the standard format:
-> *As a [type of user], I want to [do something], so that [reason/benefit].*
-
-Covers event creation and management, event discovery and browsing, registration and waiting list behavior, reviews and ratings, and administrative moderation actions.
-
-### 3. Data Model (`relational_diagram.png`)
-Relational diagram including all entities, attributes, data types, primary and foreign keys, and relationships with cardinality notation.
 
 ---
 
@@ -68,4 +108,4 @@ Relational diagram including all entities, attributes, data types, primary and f
 
 ---
 
-*Assignment 1 — April 2026*
+*Assignment 2 — May 2026*
