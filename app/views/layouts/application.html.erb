@@ -23,7 +23,16 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- Renderizamos la Navbar -->
+    <%= render 'shared/navbar' %>
+
+    <!-- El contenido de cada página (home, events, etc.) se inyecta aquí -->
+    <main class="flex-shrink-0 mb-5 container mt-4">
+      <%= yield %>
+    </main>
+
+    <!-- Renderizamos el Footer -->
+    <%= render 'shared/footer' %>
   </body>
 </html>

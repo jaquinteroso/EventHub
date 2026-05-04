@@ -1,0 +1,21 @@
+<h1 class="mb-4">Venues</h1>
+<table class="table table-hover table-bordered shadow-sm">
+  <thead class="table-dark">
+    <tr>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Max Capacity</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @venues.each do |venue| %>
+      <tr>
+        <td><%= venue.name %></td>
+        <td><%= venue.address %></td>
+        <td><%= venue.capacity_max %></td>
+        <td><%= link_to 'View Venue', venue_path(venue), class: 'btn btn-sm btn-outline-primary' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
