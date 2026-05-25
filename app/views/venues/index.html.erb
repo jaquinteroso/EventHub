@@ -1,4 +1,10 @@
-<h1 class="mb-4">Venues</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Venues</h1>
+  <% if user_signed_in? %>
+    <%= link_to 'New Venue', new_venue_path, class: 'btn btn-primary' %>
+  <% end %>
+</div>
+
 <table class="table table-hover table-bordered shadow-sm">
   <thead class="table-dark">
     <tr>
@@ -14,7 +20,13 @@
         <td><%= venue.name %></td>
         <td><%= venue.address %></td>
         <td><%= venue.capacity_max %></td>
-        <td><%= link_to 'View Venue', venue_path(venue), class: 'btn btn-sm btn-outline-primary' %></td>
+        <td>
+          <%= link_to 'View', venue_path(venue), class: 'btn btn-sm btn-outline-primary' %>
+          <% if user_signed_in? %>
+            <%= link_to 'Edit', edit_venue_path(venue), class: 'btn btn-sm btn-outline-secondary' %>
+            <%= button_to 'Delete', venue_path(venue), method: :delete, class: 'btn btn-sm btn-outline-danger d-inline', data: { confirm: 'Are you sure?' } %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

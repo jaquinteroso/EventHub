@@ -1,27 +1,112 @@
 <div class="row">
   <div class="col-lg-8">
-    <h1 class="fw-bolder mb-1"><%= @event.title %></h1>
-    <div class="text-muted fst-italic mb-2">Organized by <%= @event.organizer.full_name %></div>
+    <div class="d-flex align-items-center gap-3 mb-2">
+      <h1 class="fw-bolder mb-0"><%= @event.title %></h1>
+    </div>
+    <div class="text-muted fst-italic mb-3">Organized by <%= @event.organizer.full_name %></div>
     
-    <%= link_to @event.category.name, category_path(@event.category), class: "badge bg-secondary text-decoration-none link-light mb-4" %>
-    <span class="badge bg-info text-decoration-none link-light mb-4"><%= @event.state.capitalize %></span>
+    <div class="mb-4">
+      <span class="badge bg-secondary p-2 fs-6"><%= @event.category.name %></span>
+      <% state_colors = { 'draft' => 'warning text-dark', 'published' => 'success', 'ongoing' => 'primary', 'completed' => 'dark', 'cancelled' => 'danger' } %>
+      <span class="badge bg-<%= state_colors[@event.state] %> p-2 fs-6"><%= @event.state.capitalize %></span>
+    </div>
 
-    <section class="mb-5 mt-4">
-      <!-- Muestra el ActionText -->
-      <%= @event.description %>
-    </section>
+    <hr>
+
+    <div class="my-4">
+      <h4 class="fw-bold">About this event</h4>
+      <div class="bg-light p-3 rounded border">
+        <%= @event.description %>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="mt-4">
+      <h3 class="fw-bold mb-3">Reviews</h3>
+      <% if @event.reviews.any? %>
+        <% @event.reviews.each do |review| %>
+          <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <strong><%= review.user.full_name %></strong>
+                <span class="text-warning"><%= "★" * review.rating %><%= "☆" * (5 - review.rating) %></span>
+              </div>
+              <p class="mb-0 mt-2 text-muted"><%= review.comment %></p>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-muted">No reviews yet for this event.</p>
+      <% end %>
+
+      <% if user_signed_in? && @registration&.persisted? && @registration.confirmed? && @event.completed? %>
+        <div class="card p-3 mt-3 border-primary bg-light">
+          <h5>Leave your Feedback</h5>
+          <%= form_with(model: [@event, @review], local: true) do |f| %>
+            <div class="mb-2">
+              <%= f.label :rating, "Rating (1-5)", class: "form-label small fw-bold" %>
+              <%= f.number_field :rating, in: 1..5, class: "form-control w-25", required: true %>
+            </div>
+            <div class="mb-2">
+              <%= f.label :comment, "Comment", class: "form-label small fw-bold" %>
+              <%= f.text_area :comment, rows: 2, class: "form-control", required: true %>
+            </div>
+            <%= f.submit "Submit Review", class: "btn btn-primary btn-sm" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
   
   <div class="col-lg-4">
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header bg-primary text-white">Event Details</div>
+    <div class="card mb-4 shadow-sm border-primary">
+      <div class="card-header bg-primary text-white fw-bold">Registration & Details</div>
       <div class="card-body">
-        <p><strong>Venue:</strong> <%= link_to @event.venue.name, venue_path(@event.venue) %></p>
-        <p><strong>Start Date:</strong> <%= @event.start_date.strftime("%d/%m/%Y %H:%M") %></p>
-        <p><strong>End Date:</strong> <%= @event.end_date.strftime("%d/%m/%Y %H:%M") %></p>
-        <p><strong>Capacity:</strong> <%= @event.max_capacity %> people</p>
+        <p class="mb-2"><strong>Venue:</strong> <%= link_to @event.venue.name, venue_path(@event.venue), class: "text-decoration-none" %></p>
+        <p class="mb-2"><strong>Starts:</strong> <%= @event.start_date.strftime("%B %d, %Y at %H:%M") %></p>
+        <p class="mb-2"><strong>Ends:</strong> <%= @event.end_date.strftime("%B %d, %Y at %H:%M") %></p>
+        <p class="mb-0"><strong>Capacity:</strong> <%= @event.max_capacity %> total spots</p>
+        <p class="text-muted small">(<%= @event.spots_available %> spots remaining)</p>
+        
+        <hr>
+        
+        <% if @event.published? %>
+          <% if user_signed_in? %>
+            <% if @registration.persisted? %>
+              <div class="alert alert-<%= @registration.confirmed? ? 'success' : 'warning' %> text-center py-2 mb-2">
+                Your status: <strong><%= @registration.status.humanize %></strong>
+              </div>
+              <%= button_to "Cancel Registration", event_registration_path(@event, @registration), method: :delete, class: "btn btn-danger w-100", data: { confirm: "Are you sure you want to cancel?" } %>
+            <% else %>
+              <%= button_to @event.spots_available > 0 ? "Register for Event" : "Join Waiting List", event_registrations_path(@event), method: :post, class: "btn btn-success w-100 fw-bold" %>
+            <% end %>
+          <% else %>
+            <%= link_to "Login to Register", new_user_session_path, class: "btn btn-outline-primary w-100" %>
+          <% end %>
+        <% else %>
+          <div class="alert alert-secondary mb-0 text-center py-2">
+            Registrations are closed for this event status.
+          </div>
+        <% end %>
       </div>
     </div>
-    <%= link_to 'Back to Events', events_path, class: 'btn btn-secondary w-100' %>
+
+    <% if user_signed_in? && @event.organizer == current_user %>
+      <div class="card mb-4 border-warning shadow-sm">
+        <div class="card-header bg-warning text-dark fw-bold">Organizer Controls</div>
+        <div class="card-body d-flex flex-column gap-2">
+          <%= link_to 'Edit Event Details', edit_event_path(@event), class: "btn btn-outline-dark btn-sm text-start" %>
+          
+          <% if @event.draft? %>
+            <%= button_to 'Publish Event', publish_event_path(@event), method: :patch, class: "btn btn-success btn-sm w-100 text-start" %>
+          <% end %>
+          
+          <% if @event.draft? || @event.published? %>
+            <%= button_to 'Cancel Event', cancel_event_path(@event), method: :patch, class: "btn btn-danger btn-sm w-100 text-start", data: { confirm: 'Are you sure you want to cancel this event?' } %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>
