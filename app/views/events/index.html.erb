@@ -1,15 +1,27 @@
-<h1 class="mb-4">All Events</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="fw-bold">All Events</h1>
+  <% if user_signed_in? %>
+    <%= link_to 'Create New Event', new_event_path, class: 'btn btn-primary fw-bold shadow-sm' %>
+  <% end %>
+</div>
+
 <div class="row">
   <% @events.each do |event| %>
     <div class="col-md-4 mb-4">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title"><%= event.title %></h5>
-          <h6 class="card-subtitle mb-2 text-muted"><%= event.category.name %> | <%= event.venue.name %></h6>
-          <p class="card-text"><strong>Starts:</strong> <%= event.start_date.strftime("%d/%m/%Y %H:%M") %></p>
-          <span class="badge bg-info mb-3"><%= event.state.capitalize %></span>
-          <br>
-          <%= link_to 'View Details', event_path(event), class: 'btn btn-outline-primary' %>
+      <div class="card h-100 shadow-sm border-0 bg-light">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title fw-bold text-dark"><%= event.title %></h5>
+          <h6 class="card-subtitle mb-3 text-muted"><%= event.category.name %> | <%= event.venue.name %></h6>
+          <p class="card-text mb-2"><strong>Starts:</strong> <%= event.start_date.strftime("%d/%m/%Y %H:%M") %></p>
+          
+          <div class="mb-3">
+            <% state_colors = { 'draft' => 'warning text-dark', 'published' => 'success', 'ongoing' => 'primary', 'completed' => 'dark', 'cancelled' => 'danger' } %>
+            <span class="badge bg-<%= state_colors[event.state] %>"><%= event.state.capitalize %></span>
+          </div>
+          
+          <div class="mt-auto">
+            <%= link_to 'View Details', event_path(event), class: 'btn btn-outline-primary w-100' %>
+          </div>
         </div>
       </div>
     </div>
