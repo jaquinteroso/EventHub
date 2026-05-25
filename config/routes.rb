@@ -8,7 +8,7 @@ Rails.application.routes.draw do
       patch :publish
       patch :cancel
     end
-    
+
     resources :registrations, only: [:create, :destroy]
     resources :reviews, only: [:create]
   end

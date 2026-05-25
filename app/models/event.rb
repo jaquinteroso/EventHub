@@ -13,11 +13,21 @@ class Event < ApplicationRecord
 
   validates :title, presence: true
   validates :start_date, :end_date, presence: true
-  validates :max_capacity, presence: true, numericality: { greater_than: 0 }
+  validates :max_capacity, presence: true, numericality: { greater_than: 0, only_integer: true }
   validate :end_date_after_start_date
   validate :capacity_within_venue_limits
 
+  after_initialize :set_default_state, if: :new_record?
+
+  def spots_available
+    max_capacity - registrations.confirmed.count
+  end
+
   private
+
+  def set_default_state
+    self.state ||= :draft
+  end
 
   def end_date_after_start_date
     return if end_date.blank? || start_date.blank?
