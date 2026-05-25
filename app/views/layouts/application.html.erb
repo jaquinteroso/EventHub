@@ -24,15 +24,20 @@
   </head>
 
   <body class="d-flex flex-column min-vh-100">
-    <!-- Renderizamos la Navbar -->
     <%= render 'shared/navbar' %>
 
-    <!-- El contenido de cada página (home, events, etc.) se inyecta aquí -->
     <main class="flex-shrink-0 mb-5 container mt-4">
+      
+      <% flash.each do |key, message| %>
+        <div class="alert alert-<%= key == 'notice' ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
+          <%= message %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% end %>
+
       <%= yield %>
     </main>
 
-    <!-- Renderizamos el Footer -->
     <%= render 'shared/footer' %>
   </body>
 </html>
