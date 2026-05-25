@@ -2,7 +2,7 @@
 
 **Universidad de los Andes — Faculty of Engineering and Applied Sciences**
 **Course:** Web Technologies (202610)
-**Assignment 2:** Rails Application with Database Integration
+**Assignment 3:** CRUD, Forms, Validations, and ActionText
 
 ---
 
@@ -12,6 +12,17 @@
 |---|---|
 | Jorge Quinteros | [@jaquinteroso](https://github.com/jaquinteroso) |
 | Francisco Correa | [@C0RREAA](https://github.com/C0RREAA) |
+
+---
+
+## Assignment 3 Updates
+
+* **Authentication:** Integrated Devise for user management, including customized views to support the `full_name` attribute.
+* **Rich Text:** Configured ActionText for rich event descriptions, allowing organizers to format text with bold, italics, lists, and links.
+* **CRUD Operations:** Full interactive CRUD functionality implemented for Events, Venues, and Categories with Bootstrap-styled forms.
+* **Business Logic & Validations:** * Automatic waitlist promotion: If an event is full, users are waitlisted. If a confirmed user cancels, the next waitlisted user is automatically promoted.
+  * Event state lifecycle: Events start as `draft`, can be `published` (to accept registrations), and then marked as `completed` or `cancelled`.
+  * Restrictions: Users can only register for `published` events, and can only review `completed` events they attended.
 
 ---
 
@@ -47,7 +58,7 @@ The application is built around the following entities:
 
 ```bash
 # Clone the repository
-git clone https://github.com/jaquinteroso/EventHub.git
+git clone [https://github.com/jaquinteroso/EventHub.git](https://github.com/jaquinteroso/EventHub.git)
 cd EventHub
 
 # Install dependencies
@@ -69,13 +80,15 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Repository Structure
 
-```
+```text
 EventHub/
 ├── app/
 │   ├── controllers/
 │   │   ├── categories_controller.rb
 │   │   ├── events_controller.rb
 │   │   ├── pages_controller.rb
+│   │   ├── registrations_controller.rb
+│   │   ├── reviews_controller.rb
 │   │   └── venues_controller.rb
 │   ├── models/
 │   │   ├── category.rb
@@ -85,14 +98,17 @@ EventHub/
 │   │   ├── user.rb
 │   │   └── venue.rb
 │   └── views/
-│       └── pages/
-│           └── home.html.erb       # Landing page
+│       ├── categories/       # CRUD views
+│       ├── devise/           # Custom authentication views
+│       ├── events/           # CRUD views & form partial
+│       ├── pages/            # Landing page
+│       ├── shared/           # Navbar and Footer partials
+│       └── venues/           # CRUD views
 ├── db/
 │   ├── schema.rb
-│   └── seeds.rb                    # Sample data for all entities
-├── relational_diagram.png          # Relational data model diagram
-├── user_stories.md                 # Complete set of user stories
-└── README.md                       # This file
+│   └── seeds.rb              # Sample data showcasing waitlists and states
+├── docs/                     # Updated data models and user stories
+└── README.md                 # This file
 ```
 
 ---
@@ -101,11 +117,10 @@ EventHub/
 
 - **Ruby on Rails 8** — main framework (MVC)
 - **PostgreSQL** — database engine
-- **Bootstrap** — styling and responsive design
+- **Bootstrap** — styling, alerts, and responsive design
 - **Devise** — authentication
-- **CanCanCan** — role-based authorization
 - **ActionText** — rich text event descriptions
 
 ---
 
-*Assignment 2 — May 2026*
+*Assignment 3 — May 25, 2026*
