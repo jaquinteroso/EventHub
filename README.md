@@ -76,6 +76,12 @@ bin/rails server
 
 Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### Test Credentials
+After running the seed file, you can log in using any of the following pre-configured accounts:
+
+- **Admin User (Organizer):** `admin@uandes.cl` / `password123`
+- **Regular User 1:** `john@uandes.cl` / `password123`
+- **Regular User 2:** `jane@uandes.cl` / `password123`
 ---
 
 ## Repository Structure
