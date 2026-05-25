@@ -5,13 +5,22 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto align-items-center">
         <li class="nav-item"><%= link_to "Events", events_path, class: "nav-link" %></li>
         <li class="nav-item"><%= link_to "Categories", categories_path, class: "nav-link" %></li>
         <li class="nav-item"><%= link_to "Venues", venues_path, class: "nav-link" %></li>
-        <!-- Dejaremos Login y Sign Up con # por ahora hasta integrar las vistas de Devise -->
-        <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Sign Up</a></li>
+        
+        <% if user_signed_in? %>
+          <li class="nav-item">
+            <span class="nav-link text-light border-end pe-3 me-2">Hello, <%= current_user.full_name %></span>
+          </li>
+          <li class="nav-item">
+            <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-outline-danger btn-sm" %>
+          </li>
+        <% else %>
+          <li class="nav-item"><%= link_to "Login", new_user_session_path, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Sign Up", new_user_registration_path, class: "btn btn-primary text-white ms-lg-2" %></li>
+        <% end %>
       </ul>
     </div>
   </div>
