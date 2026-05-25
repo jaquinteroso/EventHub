@@ -7,9 +7,9 @@ Category.destroy_all
 User.destroy_all
 
 puts "Creating Users..."
-admin = User.create!(full_name: "Admin User", email: "admin@uandes.cl", encrypted_password: "password", role: :admin)
-user1 = User.create!(full_name: "John Doe", email: "john@uandes.cl", encrypted_password: "password", role: :regular)
-user2 = User.create!(full_name: "Jane Smith", email: "jane@uandes.cl", encrypted_password: "password", role: :regular)
+admin = User.create!(full_name: "Admin User", email: "admin@uandes.cl", password: "password123", password_confirmation: "password123", role: :admin)
+user1 = User.create!(full_name: "John Doe", email: "john@uandes.cl", password: "password123", password_confirmation: "password123", role: :regular)
+user2 = User.create!(full_name: "Jane Smith", email: "jane@uandes.cl", password: "password123", password_confirmation: "password123", role: :regular)
 
 puts "Creating Categories..."
 sports = Category.create!(name: "Sports", description: "Athletic and physical activities.")
@@ -24,7 +24,7 @@ library_room = Venue.create!(name: "Library Study Room 4", address: "Library, Fl
 puts "Creating Events..."
 event_tech = Event.create!(
   title: "Intro to Ruby on Rails",
-  description: "Learn the basics of MVC with Rails 8.",
+  description: "Learn the basics of MVC with Rails 8. <b>Highly recommended!</b>",
   start_date: 2.days.from_now,
   end_date: 2.days.from_now + 2.hours,
   max_capacity: 100,
@@ -36,7 +36,7 @@ event_tech = Event.create!(
 
 event_sports = Event.create!(
   title: "5v5 Soccer Tournament",
-  description: "Friendly tournament for computer science students.",
+  description: "Friendly tournament for computer science students. <i>Bring your own cleats!</i>",
   start_date: 1.week.from_now,
   end_date: 1.week.from_now + 4.hours,
   max_capacity: 20,
@@ -52,7 +52,7 @@ event_past = Event.create!(
   start_date: 1.month.ago,
   end_date: 1.month.ago + 2.hours,
   max_capacity: 10,
-  state: :completed,
+  state: :published,
   organizer: admin,
   category: tech,
   venue: library_room
@@ -62,9 +62,12 @@ puts "Creating Registrations..."
 Registration.create!(user: user1, event: event_tech, status: :confirmed)
 Registration.create!(user: user2, event: event_tech, status: :confirmed)
 Registration.create!(user: user2, event: event_sports, status: :waiting_list)
-Registration.create!(user: user1, event: event_past, status: :confirmed)
+Registration.create!(user: user1, event: event_past, status: :confirmed) 
+
+puts "Completing past events..."
+event_past.update!(state: :completed) 
 
 puts "Creating Reviews..."
-Review.create!(user: user1, event: event_past, rating: 5, comment: "Excellent workshop, highly recommended!")
+Review.create!(user: user1, event: event_past, rating: 5, comment: "Excellent workshop, highly recommended!") # 4. Pasa la validación
 
 puts "Seed finished successfully!"
