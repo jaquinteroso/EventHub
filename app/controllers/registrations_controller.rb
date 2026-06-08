@@ -4,6 +4,7 @@ class RegistrationsController < ApplicationController
   def create
     @event = Event.find(params[:event_id])
     @registration = @event.registrations.build(user: current_user)
+    authorize! :create, @registration
     
     if @registration.save
       status_msg = @registration.confirmed? ? "You are confirmed!" : "You are on the waitlist."
@@ -16,6 +17,7 @@ class RegistrationsController < ApplicationController
   def destroy
     @event = Event.find(params[:event_id])
     @registration = current_user.registrations.find(params[:id])
+    authorize! :destroy, @registration
     
     @registration.destroy
     redirect_to @event, notice: "Registration cancelled. Waitlist promoted automatically if applicable."

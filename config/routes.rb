@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
   devise_for :users
   root "pages#home"
+
+  namespace :admin do
+    root "dashboard#index"
+    resources :users, only: [:index, :edit, :update, :destroy]
+  end
+
   resources :categories
   resources :venues
   resources :events do
@@ -11,6 +17,6 @@ Rails.application.routes.draw do
     end
 
     resources :registrations, only: [:create, :destroy]
-    resources :reviews, only: [:create]
+    resources :reviews, only: [:create, :destroy]
   end
 end

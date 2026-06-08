@@ -1,28 +1,76 @@
-puts "Clearing database..."
-Review.destroy_all
-Registration.destroy_all
-Event.destroy_all
-Venue.destroy_all
-Category.destroy_all
-User.destroy_all
+PASSWORD = "password123"
 
-puts "Creating Users..."
-admin = User.create!(full_name: "Admin User", email: "admin@uandes.cl", password: "password123", password_confirmation: "password123", role: :admin)
-user1 = User.create!(full_name: "John Doe", email: "john@uandes.cl", password: "password123", password_confirmation: "password123", role: :regular)
-user2 = User.create!(full_name: "Jane Smith", email: "jane@uandes.cl", password: "password123", password_confirmation: "password123", role: :regular)
+def seed_user(email:, full_name:, role:)
+  user = User.find_or_initialize_by(email: email)
+  user.full_name = full_name
+  user.role = role
+  user.password = PASSWORD if user.new_record?
+  user.password_confirmation = PASSWORD if user.new_record?
+  user.save!
+  user
+end
 
-puts "Creating Categories..."
-sports = Category.create!(name: "Sports", description: "Athletic and physical activities.")
-tech = Category.create!(name: "Technology", description: "Tech talks, hackathons, and workshops.")
-study = Category.create!(name: "Study Groups", description: "Collaborative study sessions.")
+def seed_category(name:, description:)
+  category = Category.find_or_initialize_by(name: name)
+  category.description = description
+  category.save!
+  category
+end
 
-puts "Creating Venues..."
-gym = Venue.create!(name: "Campus Gym", address: "Building A, Floor 1", capacity_max: 50)
-auditorium = Venue.create!(name: "Main Auditorium", address: "Building B, Floor 2", capacity_max: 200)
-library_room = Venue.create!(name: "Library Study Room 4", address: "Library, Floor 3", capacity_max: 10)
+def seed_venue(name:, address:, capacity_max:)
+  venue = Venue.find_or_initialize_by(name: name)
+  venue.address = address
+  venue.capacity_max = capacity_max
+  venue.save!
+  venue
+end
 
-puts "Creating Events..."
-event_tech = Event.create!(
+def seed_event(title:, organizer:, category:, venue:, description:, start_date:, end_date:, max_capacity:, state:)
+  event = Event.find_or_initialize_by(title: title)
+  event.assign_attributes(
+    organizer: organizer,
+    category: category,
+    venue: venue,
+    description: description,
+    start_date: start_date,
+    end_date: end_date,
+    max_capacity: max_capacity,
+    state: state
+  )
+  event.save!
+  event
+end
+
+def seed_registration(user:, event:)
+  Registration.find_or_create_by!(user: user, event: event)
+end
+
+def seed_review(user:, event:, rating:, comment:)
+  review = Review.find_or_initialize_by(user: user, event: event)
+  review.rating = rating
+  review.comment = comment
+  review.save!
+  review
+end
+
+puts "Creating users..."
+admin = seed_user(email: "admin@eventhub.com", full_name: "Admin User", role: :admin)
+user = seed_user(email: "user@eventhub.com", full_name: "Regular User", role: :regular)
+john = seed_user(email: "john@eventhub.com", full_name: "John Doe", role: :regular)
+jane = seed_user(email: "jane@eventhub.com", full_name: "Jane Smith", role: :regular)
+
+puts "Creating categories..."
+sports = seed_category(name: "Sports", description: "Athletic and physical activities.")
+tech = seed_category(name: "Technology", description: "Tech talks, hackathons, and workshops.")
+study = seed_category(name: "Study Groups", description: "Collaborative study sessions.")
+
+puts "Creating venues..."
+gym = seed_venue(name: "Campus Gym", address: "Building A, Floor 1", capacity_max: 50)
+auditorium = seed_venue(name: "Main Auditorium", address: "Building B, Floor 2", capacity_max: 200)
+library_room = seed_venue(name: "Library Study Room 4", address: "Library, Floor 3", capacity_max: 10)
+
+puts "Creating events..."
+event_tech = seed_event(
   title: "Intro to Ruby on Rails",
   description: "Learn the basics of MVC with Rails 8. <b>Highly recommended!</b>",
   start_date: 2.days.from_now,
@@ -34,40 +82,53 @@ event_tech = Event.create!(
   venue: auditorium
 )
 
-event_sports = Event.create!(
+event_sports = seed_event(
   title: "5v5 Soccer Tournament",
   description: "Friendly tournament for computer science students. <i>Bring your own cleats!</i>",
   start_date: 1.week.from_now,
   end_date: 1.week.from_now + 4.hours,
   max_capacity: 20,
   state: :published,
-  organizer: user1,
+  organizer: john,
   category: sports,
   venue: gym
 )
 
-event_past = Event.create!(
+event_study = seed_event(
+  title: "Algorithms Study Group",
+  description: "Small group review session before the algorithms midterm.",
+  start_date: 3.days.from_now,
+  end_date: 3.days.from_now + 90.minutes,
+  max_capacity: 8,
+  state: :draft,
+  organizer: user,
+  category: study,
+  venue: library_room
+)
+
+event_past = seed_event(
   title: "Advanced Git Workshop",
   description: "Deep dive into Git workflows.",
   start_date: 1.month.ago,
   end_date: 1.month.ago + 2.hours,
   max_capacity: 10,
   state: :published,
-  organizer: admin,
+  organizer: jane,
   category: tech,
   venue: library_room
 )
 
-puts "Creating Registrations..."
-Registration.create!(user: user1, event: event_tech, status: :confirmed)
-Registration.create!(user: user2, event: event_tech, status: :confirmed)
-Registration.create!(user: user2, event: event_sports, status: :waiting_list)
-Registration.create!(user: user1, event: event_past, status: :confirmed) 
+puts "Creating registrations..."
+seed_registration(user: user, event: event_tech)
+seed_registration(user: john, event: event_tech)
+seed_registration(user: jane, event: event_sports)
+seed_registration(user: user, event: event_past)
+seed_registration(user: john, event: event_past)
 
-puts "Completing past events..."
-event_past.update!(state: :completed) 
+event_past.update!(state: :completed)
 
-puts "Creating Reviews..."
-Review.create!(user: user1, event: event_past, rating: 5, comment: "Excellent workshop, highly recommended!") # 4. Pasa la validación
+puts "Creating reviews..."
+seed_review(user: user, event: event_past, rating: 5, comment: "Excellent workshop, highly recommended!")
+seed_review(user: john, event: event_past, rating: 4, comment: "Clear explanations and useful examples.")
 
 puts "Seed finished successfully!"

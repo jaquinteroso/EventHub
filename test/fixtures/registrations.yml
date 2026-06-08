@@ -1,11 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+attended:
+  user: regular
+  event: completed
+  status: 0
 
-one:
-  user_id: 1
-  event_id: 1
-  status: 1
-
-two:
-  user_id: 1
-  event_id: 1
-  status: 1
+upcoming:
+  user: regular
+  event: published
+  status: 0

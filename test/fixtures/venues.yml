@@ -1,11 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+auditorium:
+  name: Main Auditorium
+  address: Building B, Floor 2
+  capacity_max: 200
 
-one:
-  name: MyString
-  address: MyString
-  capacity_max: 1
-
-two:
-  name: MyString
-  address: MyString
-  capacity_max: 1
+gym:
+  name: Campus Gym
+  address: Building A, Floor 1
+  capacity_max: 50
