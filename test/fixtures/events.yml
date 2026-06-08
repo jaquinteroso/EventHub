@@ -1,23 +1,29 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  title: MyString
-  description: MyText
+published:
+  title: Published Event
   start_date: 2026-05-03 21:57:48
-  end_date: 2026-05-03 21:57:48
-  max_capacity: 1
+  end_date: 2026-05-03 23:57:48
+  max_capacity: 10
   state: 1
-  user_id: 1
-  category_id: 1
-  venue_id: 1
+  organizer: organizer
+  category: technology
+  venue: auditorium
 
-two:
-  title: MyString
-  description: MyText
-  start_date: 2026-05-03 21:57:48
-  end_date: 2026-05-03 21:57:48
-  max_capacity: 1
-  state: 1
-  user_id: 1
-  category_id: 1
-  venue_id: 1
+draft:
+  title: Draft Event
+  start_date: 2026-05-04 21:57:48
+  end_date: 2026-05-04 23:57:48
+  max_capacity: 10
+  state: 0
+  organizer: organizer
+  category: sports
+  venue: gym
+
+completed:
+  title: Completed Event
+  start_date: 2026-04-03 21:57:48
+  end_date: 2026-04-03 23:57:48
+  max_capacity: 10
+  state: 3
+  organizer: admin
+  category: technology
+  venue: auditorium

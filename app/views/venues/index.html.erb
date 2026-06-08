@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1>Venues</h1>
-  <% if user_signed_in? %>
+  <% if can?(:create, Venue) %>
     <%= link_to 'New Venue', new_venue_path, class: 'btn btn-primary' %>
   <% end %>
 </div>
@@ -22,9 +22,11 @@
         <td><%= venue.capacity_max %></td>
         <td>
           <%= link_to 'View', venue_path(venue), class: 'btn btn-sm btn-outline-primary' %>
-          <% if user_signed_in? %>
+          <% if can?(:update, venue) %>
             <%= link_to 'Edit', edit_venue_path(venue), class: 'btn btn-sm btn-outline-secondary' %>
-            <%= button_to 'Delete', venue_path(venue), method: :delete, class: 'btn btn-sm btn-outline-danger d-inline', data: { confirm: 'Are you sure?' } %>
+          <% end %>
+          <% if can?(:destroy, venue) %>
+            <%= button_to 'Delete', venue_path(venue), method: :delete, class: 'btn btn-sm btn-outline-danger d-inline', data: { turbo_confirm: 'Are you sure?' } %>
           <% end %>
         </td>
       </tr>

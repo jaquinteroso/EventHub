@@ -1,0 +1,34 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="fw-bold">Users</h1>
+  <%= link_to "Back to Admin", admin_root_path, class: "btn btn-outline-secondary" %>
+</div>
+
+<table class="table table-hover table-bordered shadow-sm align-middle">
+  <thead class="table-dark">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Joined</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.display_name %></td>
+        <td><%= user.email %></td>
+        <td><span class="badge bg-<%= user.admin? ? 'danger' : 'secondary' %>"><%= user.role.humanize %></span></td>
+        <td><%= user.created_at.strftime("%d/%m/%Y") %></td>
+        <td>
+          <% if can?(:update, user) %>
+            <%= link_to "Edit", edit_admin_user_path(user), class: "btn btn-sm btn-outline-secondary" %>
+          <% end %>
+          <% if can?(:destroy, user) && user != current_user %>
+            <%= button_to "Delete", admin_user_path(user), method: :delete, class: "btn btn-sm btn-outline-danger d-inline", data: { turbo_confirm: "Are you sure?" } %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

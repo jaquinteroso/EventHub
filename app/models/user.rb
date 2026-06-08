@@ -8,8 +8,13 @@ class User < ApplicationRecord
   has_many :events, through: :registrations
   has_many :reviews, dependent: :destroy
 
-  enum :role, { regular: 0, admin: 1 }
+  enum :role, { regular: 0, admin: 1 }, default: :regular
 
   validates :full_name, presence: true
   validates :email, presence: true, uniqueness: true
+  validates :role, presence: true
+
+  def display_name
+    full_name.presence || email
+  end
 end
